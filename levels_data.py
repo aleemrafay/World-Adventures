@@ -1,0 +1,56 @@
+"""
+levels_data.py
+Level layouts defined as simple grids of characters. Each character maps
+to a tile type or object (see the LEGEND below). This keeps level design
+readable and easy to edit by hand, like a blueprint.
+
+LEGEND:
+    '.'  -> empty space (air)
+    'G'  -> ground tile (solid)
+    'B'  -> brick tile (solid)
+    'C'  -> coin
+    'P'  -> power-up (mushroom-style)
+    'E'  -> enemy spawn point (patrols within nearby platform bounds)
+    'S'  -> player start position
+    'F'  -> level-end flag
+
+Each row is one line of tiles; each character is TILE_SIZE pixels.
+The grid is read top-to-bottom, left-to-right, matching how it will
+look on screen (row 0 = top of the level).
+"""
+
+# ---------------- LEVEL 1 ----------------
+LEVEL_1 = [
+    "..............................................................",
+    "..............................................................",
+    "..............................C..............................",
+    "..........................BBBBBBB.............................",
+    "..............................................................",
+    "....................C..........................C.............",
+    "..................BBBB......................BBBBB............",
+    "..............................................................",
+    "S.....C.....E..........P........E....C.............C........F",
+    "GGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGG",
+]
+
+# ---------------- LEVEL 2 ----------------
+LEVEL_2 = [
+    "..............................................................",
+    "..............................................................",
+    "..................C.......................C..................",
+    "................BBBBB...................BBBBB.................",
+    "..............................................................",
+    "....C.......................C..........................C.....",
+    "..BBBBB..................E.BBBBB......................BBBBB...",
+    "..............................................................",
+    "S..E......C........P...........E.........C........E.........F",
+    "GGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGG",
+]
+
+
+LEVELS = [
+    {"name": "Level 1-1", "grid": LEVEL_1},
+    {"name": "Level 2-1", "grid": LEVEL_2},
+]
