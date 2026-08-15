@@ -1,6 +1,6 @@
 """
 enemy.py
-Basic patrolling enemy (Goomba-style). Walks back and forth within its
+Basic patrolling enemy (zombie-style). Walks back and forth within its
 level bounds, turns around at edges/walls, and can be stomped from above.
 """
 
@@ -29,7 +29,7 @@ class Enemy:
         self.vel_y = 0.0
         self.alive = True
         self.squashed = False
-        self.squash_timer = 0.0  # brief pause before removal, for visual feedback
+        self.squash_timer = 0.0
 
         self.facing_right = False
         self._load_sprites()
@@ -39,14 +39,16 @@ class Enemy:
     # ------------------------------------------------------------------
     def _load_sprites(self):
         """
-        Tries to load enemy sprites from assets/enemy/. If not found,
+        Tries to load zombie sprites from assets/enemy/. If not found,
         falls back to a simple colored rectangle drawn in draw().
         """
         self.sprites = None
         try:
-            walk1 = pygame.image.load(os.path.join(ASSETS_PATH, "enemy_walk1.png")).convert_alpha()
-            walk2 = pygame.image.load(os.path.join(ASSETS_PATH, "enemy_walk2.png")).convert_alpha()
-            squashed = pygame.image.load(os.path.join(ASSETS_PATH, "enemy_squashed.png")).convert_alpha()
+            walk1 = pygame.image.load(os.path.join(ASSETS_PATH, "zombie_walk1.png")).convert_alpha()
+            walk2 = pygame.image.load(os.path.join(ASSETS_PATH, "zombie_walk2.png")).convert_alpha()
+            jump = pygame.image.load(os.path.join(ASSETS_PATH, "zombie_jump.png")).convert_alpha()
+            fall = pygame.image.load(os.path.join(ASSETS_PATH, "zombie_fall.png")).convert_alpha()
+            squashed = pygame.image.load(os.path.join(ASSETS_PATH, "zombie_hurt.png")).convert_alpha()
 
             def scale(img, h):
                 w, ih = img.get_size()
@@ -56,6 +58,8 @@ class Enemy:
             self.sprites = {
                 "walk1": scale(walk1, self.height),
                 "walk2": scale(walk2, self.height),
+                "jump": scale(jump, self.height),
+                "fall": scale(fall, self.height),
                 "squashed": scale(squashed, self.height // 2),
             }
         except (pygame.error, FileNotFoundError):
@@ -125,13 +129,15 @@ class Enemy:
         if self.sprites:
             if self.squashed:
                 sprite = self.sprites["squashed"]
-                draw_y = self.rect.bottom - sprite.get_height()
+            elif not self.squash_timer and self.vel_y != 0 and not self._on_ground_approx():
+                sprite = self.sprites["fall"] if self.vel_y > 0 else self.sprites["jump"]
             else:
                 sprite = self.sprites["walk1"] if self.walk_frame_index == 0 else self.sprites["walk2"]
-                if self.facing_right:
-                    sprite = pygame.transform.flip(sprite, True, False)
-                draw_y = self.rect.bottom - sprite.get_height()
 
+            if self.facing_right:
+                sprite = pygame.transform.flip(sprite, True, False)
+
+            draw_y = self.rect.bottom - sprite.get_height()
             draw_x = self.rect.centerx - sprite.get_width() // 2
             sx, sy = camera.apply_pos(draw_x, draw_y)
             screen.blit(sprite, (sx, sy))
@@ -144,6 +150,10 @@ class Enemy:
                 rect = pygame.Rect(rect.x, rect.bottom - rect.height // 2, rect.width, rect.height // 2)
             pygame.draw.rect(screen, color, rect)
             pygame.draw.rect(screen, (0, 0, 0), rect, 2)
+
+    def _on_ground_approx(self):
+        """Simple heuristic: treat near-zero vertical velocity as grounded."""
+        return abs(self.vel_y) < 5
 
 
 def check_stomp_or_hit(player, enemy):
@@ -159,8 +169,6 @@ def check_stomp_or_hit(player, enemy):
     if not player.rect.colliderect(enemy.rect):
         return None
 
-    # Stomp condition: player's bottom was above enemy's top-half AND player is falling
-    player_prev_bottom = player.rect.bottom - player.vel_y * (1 / 60)  # rough estimate
     falling = player.vel_y > 0
     landed_on_top = player.rect.bottom <= enemy.rect.top + (enemy.rect.height * 0.5)
 

@@ -11,11 +11,12 @@ import pygame
 from settings import (
     TILE_SIZE, COLOR_GROUND, COLOR_GROUND_TOP, COLOR_BRICK, COLOR_COIN,
     COLOR_POWERUP, COLOR_FLAG, COIN_SCORE, ENEMY_STOMP_SCORE,
-    LEVEL_COMPLETE_BONUS, SCREEN_HEIGHT, STATE_LEVEL_COMPLETE
+    LEVEL_COMPLETE_BONUS, SCREEN_HEIGHT, SCREEN_WIDTH, STATE_LEVEL_COMPLETE
 )
 from player import Player
 from enemy import Enemy, check_stomp_or_hit
 from camera import Camera
+from background import Background
 
 
 class Coin:
@@ -90,6 +91,7 @@ class Level:
         self.width_px = level_width_px
         self.height_px = level_height_px
         self.camera = Camera(level_width_px, level_height_px)
+        self.background = Background(level_width_px, SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # ------------------------------------------------------------------
     def _parse_grid(self):
@@ -213,6 +215,8 @@ class Level:
 
     # ------------------------------------------------------------------
     def draw(self, screen):
+        self.background.draw(screen, self.camera.offset_x)
+
         # Ground tiles
         for rect in self.solid_tiles:
             is_brick = rect in self.brick_tiles

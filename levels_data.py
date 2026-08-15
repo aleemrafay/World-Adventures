@@ -31,7 +31,7 @@ LEVEL_1 = [
     "..............................................................",
     "S.....C.....E..........P........E....C.............C........F",
     "GGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGG",
-    "GGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGGGGGGGGGG",
+    
 ]
 
 # ---------------- LEVEL 2 ----------------
@@ -46,7 +46,7 @@ LEVEL_2 = [
     "..............................................................",
     "S..E......C........P...........E.........C........E.........F",
     "GGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGG",
-    "GGGGGGGGGGGGGGGGGGGGGGGG..GGGGGGGGGG..GGGGGGGGGGGGGGGGGGGGGGGGG",
+    
 ]
 
 
